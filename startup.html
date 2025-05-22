@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Social Ventura</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #18144a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            padding: 3rem 2rem 2rem 2rem;
+            position: relative;
+            z-index: 1;
+            background: rgba(24, 20, 74, 0.85);
+            border-radius: 32px;
+            box-shadow: 0 8px 40px 0 rgba(30, 0, 60, 0.25);
+            max-width: 480px;
+            margin-top: 4vh;
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 1s ease-in;
+        }
+        h1 {
+            font-size: 2.7rem;
+            margin-bottom: 0.5rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #fff 60%, #fe2c55 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideUp 1s ease-out;
+        }
+        .subtitle {
+            font-size: 1.25rem;
+            color: #bdbdf7;
+            margin-bottom: 2.5rem;
+            animation: slideUp 1s ease-out 0.3s backwards;
+        }
+        .access-button {
+            padding: 1.1rem 2.7rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.4,2,.6,1);
+            background: linear-gradient(90deg, #fe2c55 0%, #ff5a7a 100%);
+            color: #fff;
+            font-weight: bold;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 24px 0 rgba(254,44,85,0.15);
+            letter-spacing: 0.5px;
+        }
+        .access-button:hover {
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 8px 32px 0 rgba(254,44,85,0.25);
+            background: linear-gradient(90deg, #ff5a7a 0%, #fe2c55 100%);
+        }
+        .buttons {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            animation: fadeIn 1s ease-in 0.5s backwards;
+        }
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            backdrop-filter: blur(10px);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(254,44,85,0.15);
+        }
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <img src="assets/logo.png" alt="Social Ventura Logo" class="logo">
+        <h1>Social Ventura</h1>
+        <p class="subtitle">Votre plateforme de marketing digital nouvelle génération</p>
+        <button class="access-button" onclick="accessApp()">Accéder à l'application</button>
+    </div>
+    <div class="buttons">
+        <button onclick="openInBrowser()">Version Web</button>
+        <button onclick="uninstallApp()">Désinstaller l'application</button>
+    </div>
+    <script>
+        const { ipcRenderer } = require('electron');
+        function uninstallApp() {
+            ipcRenderer.send('uninstall-app');
+        }
+        function openInBrowser() {
+            ipcRenderer.send('open-in-browser');
+        }
+        function accessApp() {
+            ipcRenderer.send('access-app');
+        }
+        // Animation des particules
+        const particles = document.getElementById('particles');
+        for (let i = 0; i < 70; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = Math.random() * 7 + 3 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.background = `linear-gradient(135deg, #fe2c55 0%, #ff5a7a 100%)`;
+            particle.style.opacity = Math.random() * 0.4 + 0.2;
+            particle.style.borderRadius = '50%';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animation = `float ${Math.random() * 12 + 8}s linear infinite`;
+            particles.appendChild(particle);
+        }
+        // Ajouter l'animation flottante
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(0) translateX(0); }
+                50% { transform: translateY(-30px) translateX(15px); }
+                100% { transform: translateY(0) translateX(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 
