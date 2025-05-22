@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
 const Store = require('electron-store');
 const path = require('path');
 
@@ -8,48 +8,20 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1200,
+    width: 1600,
     height: 800,
+    minWidth: 1200,
+    minHeight: 800,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      webviewTag: true
     },
     icon: path.join(__dirname, 'assets/icon.png')
   });
 
-  // Charger la page de démarrage stylée
-  mainWindow.loadFile('startup.html');
-
-  // Gérer la redirection de la page principale vers login
-  mainWindow.webContents.on('will-navigate', (event, url) => {
-    if (url === 'https://socialventura.com/') {
-      event.preventDefault();
-      mainWindow.loadURL('https://socialventura.com/login');
-    }
-  });
-
-  // Remplacer le lien "Back to home" immédiatement
-  mainWindow.webContents.on('did-start-loading', () => {
-    const currentUrl = mainWindow.webContents.getURL();
-    if (currentUrl.includes('socialventura.com/login')) {
-      mainWindow.webContents.executeJavaScript(`
-        // Remplacer le lien par un texte non cliquable
-        const observer = new MutationObserver((mutations) => {
-          const backToHomeLink = document.querySelector('a[href="https://socialventura.com"]');
-          if (backToHomeLink) {
-            const parent = backToHomeLink.parentElement;
-            parent.innerHTML = '<span class="text-gray-500">Version application</span>';
-            observer.disconnect();
-          }
-        });
-
-        observer.observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-      `);
-    }
-  });
+  // Charger la page du navigateur
+  mainWindow.loadFile('index.html');
 
   // Ouvrir les liens externes dans le navigateur par défaut
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -72,17 +44,189 @@ app.on('activate', () => {
   }
 });
 
-// Gérer la désinstallation
-ipcMain.on('uninstall-app', () => {
-  app.quit();
+// Gestion des raccourcis utilisateur
+ipcMain.handle('get-shortcuts', () => {
+  return store.get('shortcuts', []);
 });
 
-// Gérer l'ouverture dans le navigateur
-ipcMain.on('open-in-browser', () => {
-  shell.openExternal('https://socialventura.com');
+ipcMain.handle('add-shortcut', (event, shortcut) => {
+  const shortcuts = store.get('shortcuts', []);
+  // Empêche les doublons d'URL
+  if (!shortcuts.some(s => s.url === shortcut.url)) {
+    shortcuts.push(shortcut);
+    store.set('shortcuts', shortcuts);
+  }
+  return shortcuts;
 });
 
-// Gérer l'accès à l'application
-ipcMain.on('access-app', () => {
-  mainWindow.loadURL('https://socialventura.com/login');
-}); 
+// Modifier un raccourci
+ipcMain.handle('update-shortcut', (event, { index, newName }) => {
+  const shortcuts = store.get('shortcuts', []);
+  if (shortcuts[index]) {
+    shortcuts[index].name = newName;
+    store.set('shortcuts', shortcuts);
+  }
+  return shortcuts;
+});
+
+// Supprimer un raccourci
+ipcMain.handle('delete-shortcut', (event, index) => {
+  const shortcuts = store.get('shortcuts', []);
+  shortcuts.splice(index, 1);
+  store.set('shortcuts', shortcuts);
+  return shortcuts;
+});
+
+// Dialog pour saisir le nom du raccourci
+ipcMain.handle('show-input-dialog', async (event, options) => {
+  try {
+    const result = await dialog.showInputBox(mainWindow, {
+      title: options.title || 'Input',
+      label: options.message || 'Entrez une valeur:',
+      value: options.defaultValue || ''
+    });
+    return result.response;
+  } catch (error) {
+    // Fallback avec une fenêtre personnalisée
+    return await showCustomInputDialog(options);
+  }
+});
+
+// Fonction pour créer une fenêtre de saisie personnalisée
+async function showCustomInputDialog(options) {
+  return new Promise((resolve) => {
+    const inputWindow = new BrowserWindow({
+      parent: mainWindow,
+      modal: true,
+      width: 400,
+      height: 180,
+      resizable: false,
+      frame: false,
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false
+      }
+    });
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 0;
+            margin: 0;
+            background: #18144a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+          }
+          .container {
+            background: #18144a;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 90%;
+            max-width: 350px;
+          }
+          h3 {
+            margin: 0 0 15px 0;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+          }
+          input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 14px;
+            margin: 10px 0 20px 0;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            box-sizing: border-box;
+          }
+          input:focus {
+            outline: none;
+            border-color: #fe2c55;
+            background: rgba(255,255,255,0.15);
+          }
+          input::placeholder {
+            color: rgba(255,255,255,0.6);
+          }
+          .buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+          }
+          button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+          }
+          .ok { 
+            background: linear-gradient(90deg, #fe2c55 0%, #ff5a7a 100%);
+            color: white; 
+          }
+          .ok:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(254,44,85,0.3);
+          }
+          .cancel { 
+            background: rgba(255,255,255,0.1); 
+            color: #fff; 
+            border: 1px solid rgba(255,255,255,0.2);
+          }
+          .cancel:hover {
+            background: rgba(255,255,255,0.2);
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h3>${options.title || 'Input'}</h3>
+          <input type="text" id="input" value="${options.defaultValue || ''}" placeholder="Entrez le nom du raccourci" autofocus />
+          <div class="buttons">
+            <button class="cancel" onclick="cancel()">Annuler</button>
+            <button class="ok" onclick="ok()">Ajouter</button>
+          </div>
+        </div>
+        <script>
+          const { ipcRenderer } = require('electron');
+          function ok() {
+            const value = document.getElementById('input').value;
+            ipcRenderer.send('input-result', value);
+          }
+          function cancel() {
+            ipcRenderer.send('input-result', null);
+          }
+          document.getElementById('input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') ok();
+            if (e.key === 'Escape') cancel();
+          });
+          document.getElementById('input').focus();
+        </script>
+      </body>
+      </html>
+    `;
+
+    inputWindow.loadURL('data:text/html;charset=UTF-8,' + encodeURIComponent(html));
+
+    ipcMain.once('input-result', (event, result) => {
+      inputWindow.close();
+      resolve(result);
+    });
+
+    inputWindow.on('closed', () => {
+      resolve(null);
+    });
+  });
+}

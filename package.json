@@ -1,25 +1,29 @@
 {
-  "name": "social-ventura-app",
-  "version": "1.0.0",
+  "name": "socialventura-app",
+  "version": "1.0.3",
   "description": "Application Electron pour Social Ventura, plateforme de marketing digital.",
   "main": "main.js",
+  "author": "Tristan Baldazzi",
+  "license": "ISC",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "publish": "electron-builder --publish always"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "@electron/remote": "^2.1.2",
     "electron-store": "^8.1.0"
   },
   "devDependencies": {
     "electron": "^28.1.0",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.9.1",
+    "electron-updater": "^6.1.7"
   },
   "build": {
     "appId": "com.socialventura.app",
-    "productName": "Social Ventura",
+    "productName": "SocialVentura",
     "mac": {
+      "identity": null,
       "category": "public.app-category.social-networking",
       "icon": "assets/logo.png"
     },
@@ -32,4 +36,4 @@
       "icon": "assets/logo.png"
     }
   }
-} 
+}

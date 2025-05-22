@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Social Ventura</title>
+    <title>Social Ventura Browser</title>
     <style>
         body {
             margin: 0;
@@ -9,163 +9,557 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #18144a;
             color: #fff;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
         }
-        .container {
-            text-align: center;
-            padding: 3rem 2rem 2rem 2rem;
-            position: relative;
-            z-index: 1;
-            background: rgba(24, 20, 74, 0.85);
-            border-radius: 32px;
-            box-shadow: 0 8px 40px 0 rgba(30, 0, 60, 0.25);
-            max-width: 480px;
-            margin-top: 4vh;
-        }
-        .logo {
-            width: 120px;
-            margin-bottom: 2.5rem;
-            animation: fadeIn 1s ease-in;
-        }
-        h1 {
-            font-size: 2.7rem;
-            margin-bottom: 0.5rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, #fff 60%, #fe2c55 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: slideUp 1s ease-out;
-        }
-        .subtitle {
-            font-size: 1.25rem;
-            color: #bdbdf7;
-            margin-bottom: 2.5rem;
-            animation: slideUp 1s ease-out 0.3s backwards;
-        }
-        .access-button {
-            padding: 1.1rem 2.7rem;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(.4,2,.6,1);
-            background: linear-gradient(90deg, #fe2c55 0%, #ff5a7a 100%);
-            color: #fff;
-            font-weight: bold;
-            margin-top: 2.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 24px 0 rgba(254,44,85,0.15);
-            letter-spacing: 0.5px;
-        }
-        .access-button:hover {
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 8px 32px 0 rgba(254,44,85,0.25);
-            background: linear-gradient(90deg, #ff5a7a 0%, #fe2c55 100%);
-        }
-        .buttons {
-            position: fixed;
-            bottom: 2.5rem;
-            left: 0;
-            right: 0;
+
+        /* Barre d'outils principale */
+        .toolbar {
+            background: linear-gradient(90deg, #18144a 60%, #fe2c55 100%);
+            padding: 12px 16px;
             display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            animation: fadeIn 1s ease-in 0.5s backwards;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+            z-index: 1000;
         }
-        button {
-            padding: 0.8rem 1.5rem;
+
+        /* Boutons de navigation */
+        .nav-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-button {
+            background: rgba(255,255,255,0.1);
             border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            backdrop-filter: blur(10px);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(254,44,85,0.15);
+
+        .nav-button:hover {
+            background: rgba(255,255,255,0.2);
         }
-        .particles {
+
+        .nav-button svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Barre d'adresse */
+        .address-bar {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 8px 16px;
+            gap: 12px;
+        }
+
+        .address-bar input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .address-bar input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        /* Onglets */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 8px 16px;
+            background: rgba(24,20,74,0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px 8px 0 0;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            min-width: 120px;
+            max-width: 200px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab.active {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .tab:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .tab-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 13px;
+        }
+
+        .tab-close {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+
+        .tab-close:hover {
+            background: rgba(255,255,255,0.2);
+            opacity: 1;
+        }
+
+        .new-tab {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .new-tab:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Zone de contenu */
+        .content {
+            flex: 1 1 auto;
+            height: 100%;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Les webviews prennent toute la place */
+        .browser-frame {
+            flex: 1 1 auto;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fff;
+            display: none;
+        }
+
+        .browser-frame.active {
+            display: block;
+            z-index: 1;
+        }
+
+        /* Loader */
+        .loader {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #fe2c55 0%, #ff5a7a 100%);
+            transform-origin: 0 50%;
+            transform: scaleX(0);
+            transition: transform 0.2s;
+            z-index: 1001;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+
+        .loader.loading {
+            animation: loading 1s infinite;
         }
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+
+        /* Favoris */
+        .favorites {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(24,20,74,0.95);
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+        }
+
+        .favorites::-webkit-scrollbar {
+            display: none;
+        }
+
+        .favorite {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .favorite:hover {
+            background: rgba(255,255,255,0.2);
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+
+        .favorite-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.8;
+        }
+
+        .favorite-title {
+            font-size: 13px;
             }
+
+        @keyframes loading {
+            0% { transform: scaleX(0); }
+            50% { transform: scaleX(0.5); }
+            100% { transform: scaleX(1); }
+        }
+
+        /* Assurer que le contenu prend toute la hauteur disponible */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    <div class="container">
-        <img src="assets/logo.png" alt="Social Ventura Logo" class="logo">
-        <h1>Social Ventura</h1>
-        <p class="subtitle">Votre plateforme de marketing digital nouvelle génération</p>
-        <button class="access-button" onclick="accessApp()">Accéder à l'application</button>
+    <div class="loader"></div>
+    
+    <div class="toolbar">
+        <div class="nav-buttons">
+            <button class="nav-button" id="back">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <button class="nav-button" id="forward">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+            <button class="nav-button" id="reload">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="address-bar">
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input type="text" id="url" placeholder="Rechercher ou entrer une adresse web">
     </div>
-    <div class="buttons">
-        <button onclick="openInBrowser()">Version Web</button>
-        <button onclick="uninstallApp()">Désinstaller l'application</button>
+
+        <button class="nav-button" id="add-favorite">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+        </button>
     </div>
+
+    <div class="tabs">
+        <div class="new-tab">+</div>
+    </div>
+
+    <div class="content">
+        <!-- Les frames seront créées dynamiquement -->
+    </div>
+
+    <div class="favorites"></div>
+
     <script>
         const { ipcRenderer } = require('electron');
-        function uninstallApp() {
-            ipcRenderer.send('uninstall-app');
+        let currentTabId = 0;
+        let tabs = [];
+        let favorites = [];
+
+        // Charger les favoris au démarrage
+        ipcRenderer.invoke('get-shortcuts').then(shortcuts => {
+            favorites = shortcuts;
+            renderFavorites();
+        });
+
+        // Fonction pour forcer le height:100% sur l'iframe interne du webview
+        function forceIframeHeight(webview) {
+            webview.addEventListener('dom-ready', () => {
+                const tryInject = () => {
+                    try {
+                        const shadow = webview.shadowRoot;
+                        if (shadow) {
+                            const iframe = shadow.querySelector('iframe');
+                            if (iframe) {
+                                iframe.style.height = '100%';
+                            }
+                        }
+                    } catch (e) {}
+                };
+                tryInject();
+                setTimeout(tryInject, 100);
+                setTimeout(tryInject, 500);
+            });
         }
-        function openInBrowser() {
-            ipcRenderer.send('open-in-browser');
+
+        // Gestion des onglets
+        function createNewTab(url = 'https://socialventura.com/user/profil') {
+            const tabId = ++currentTabId;
+            tabs.push({ id: tabId, url, title: 'Nouvel onglet' });
+            
+            const tab = document.createElement('div');
+            tab.className = 'tab';
+            tab.dataset.tabId = tabId;
+            tab.innerHTML = `
+                <span class="tab-title">Nouvel onglet</span>
+                <span class="tab-close">×</span>
+            `;
+
+            const webview = document.createElement('webview');
+            webview.id = `frame-${tabId}`;
+            webview.className = 'browser-frame';
+            webview.src = url;
+            webview.setAttribute('webpreferences', 'contextIsolation=yes');
+            webview.setAttribute('allowpopups', 'true');
+            // Force le style pour garantir la taille
+            webview.style.height = '100%';
+            webview.style.width = '100%';
+            webview.style.flex = '1 1 auto';
+            webview.style.position = 'absolute';
+            webview.style.top = '0';
+            webview.style.left = '0';
+
+            document.querySelector('.tabs').insertBefore(tab, document.querySelector('.new-tab'));
+            document.querySelector('.content').appendChild(webview);
+
+            setupWebviewListeners(webview, tabId);
+            forceIframeHeight(webview);
+            switchToTab(tabId);
         }
-        function accessApp() {
-            ipcRenderer.send('access-app');
-        }
-        // Animation des particules
-        const particles = document.getElementById('particles');
-        for (let i = 0; i < 70; i++) {
-            const particle = document.createElement('div');
-            particle.style.position = 'absolute';
-            particle.style.width = Math.random() * 7 + 3 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.background = `linear-gradient(135deg, #fe2c55 0%, #ff5a7a 100%)`;
-            particle.style.opacity = Math.random() * 0.4 + 0.2;
-            particle.style.borderRadius = '50%';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animation = `float ${Math.random() * 12 + 8}s linear infinite`;
-            particles.appendChild(particle);
-        }
-        // Ajouter l'animation flottante
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes float {
-                0% { transform: translateY(0) translateX(0); }
-                50% { transform: translateY(-30px) translateX(15px); }
-                100% { transform: translateY(0) translateX(0); }
+
+        function switchToTab(tabId) {
+            // Mettre à jour les onglets
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tabId == tabId);
+            });
+
+            // Mettre à jour les webviews
+            document.querySelectorAll('.browser-frame').forEach(webview => {
+                webview.classList.toggle('active', webview.id === `frame-${tabId}`);
+            });
+
+            // Mettre à jour la barre d'adresse
+            const currentTab = tabs.find(t => t.id == tabId);
+            if (currentTab) {
+                document.getElementById('url').value = currentTab.url;
             }
-        `;
-        document.head.appendChild(style);
+        }
+
+        function closeTab(tabId) {
+            const tabIndex = tabs.findIndex(t => t.id == tabId);
+            if (tabIndex === -1) return;
+
+            tabs.splice(tabIndex, 1);
+            document.querySelector(`[data-tab-id="${tabId}"]`).remove();
+            document.getElementById(`frame-${tabId}`).remove();
+
+            if (tabs.length === 0) {
+                createNewTab();
+            } else {
+                switchToTab(tabs[Math.min(tabIndex, tabs.length - 1)].id);
+            }
+        }
+
+        // Gestion des webviews
+        function setupWebviewListeners(webview, tabId) {
+            webview.addEventListener('did-start-loading', () => {
+                document.querySelector('.loader').classList.add('loading');
+            });
+
+            webview.addEventListener('did-stop-loading', () => {
+                document.querySelector('.loader').classList.remove('loading');
+                const tab = tabs.find(t => t.id == tabId);
+                if (tab) {
+                    tab.url = webview.src;
+                    tab.title = webview.getTitle() || 'Nouvel onglet';
+                    document.querySelector(`[data-tab-id="${tabId}"] .tab-title`).textContent = tab.title;
+                    if (webview.classList.contains('active')) {
+                        document.getElementById('url').value = tab.url;
+                    }
+                }
+            });
+
+            webview.addEventListener('did-navigate', (e) => {
+                if (webview.classList.contains('active')) {
+                    document.getElementById('url').value = e.url;
+                    const tab = tabs.find(t => t.id == tabId);
+                    if (tab) tab.url = e.url;
+                }
+            });
+
+            webview.addEventListener('did-navigate-in-page', (e) => {
+                if (webview.classList.contains('active')) {
+                    document.getElementById('url').value = e.url;
+                    const tab = tabs.find(t => t.id == tabId);
+                    if (tab) tab.url = e.url;
+                }
+            });
+
+            webview.addEventListener('did-fail-load', (e) => {
+                console.error('Erreur de chargement:', e);
+                if (webview.classList.contains('active')) {
+                    document.getElementById('url').value = e.url;
+                }
+            });
+
+            // Gérer les nouveaux onglets
+            webview.addEventListener('new-window', (e) => {
+                createNewTab(e.url);
+            });
+        }
+
+        // Gestion des favoris
+        function renderFavorites() {
+            const container = document.querySelector('.favorites');
+            container.innerHTML = favorites.map(fav => `
+                <div class="favorite" data-url="${fav.url}">
+                    <svg class="favorite-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                    <span class="favorite-title">${fav.name}</span>
+                </div>
+            `).join('');
+
+            // Ajouter les événements
+            container.querySelectorAll('.favorite').forEach(fav => {
+                fav.addEventListener('click', () => {
+                    createNewTab(fav.dataset.url);
+                });
+            });
+        }
+
+        // Événements
+        document.querySelector('.new-tab').addEventListener('click', () => createNewTab());
+
+        document.querySelector('.tabs').addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-close')) {
+                const tabId = e.target.parentElement.dataset.tabId;
+                closeTab(tabId);
+            } else {
+                let tabElem = e.target;
+                while (tabElem && !tabElem.classList.contains('tab')) {
+                    tabElem = tabElem.parentElement;
+                }
+                if (tabElem && tabElem.classList.contains('tab')) {
+                    switchToTab(tabElem.dataset.tabId);
+                }
+            }
+        });
+
+        document.getElementById('url').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const url = e.target.value;
+                const currentTab = tabs.find(t => t.id == currentTabId);
+                if (currentTab) {
+                    const webview = document.getElementById(`frame-${currentTabId}`);
+                    webview.src = url;
+                    currentTab.url = url;
+                }
+            }
+        });
+
+        document.getElementById('back').addEventListener('click', () => {
+            const webview = document.getElementById(`frame-${currentTabId}`);
+            if (webview && webview.canGoBack()) {
+                webview.goBack();
+            }
+        });
+
+        document.getElementById('forward').addEventListener('click', () => {
+            const webview = document.getElementById(`frame-${currentTabId}`);
+            if (webview && webview.canGoForward()) {
+                webview.goForward();
+            }
+        });
+
+        document.getElementById('reload').addEventListener('click', () => {
+            const webview = document.getElementById(`frame-${currentTabId}`);
+            if (webview) {
+                webview.reload();
+            }
+        });
+
+        document.getElementById('add-favorite').addEventListener('click', () => {
+            const currentTab = tabs.find(t => t.id == currentTabId);
+            if (currentTab && currentTab.url !== 'about:blank') {
+                ipcRenderer.invoke('show-input-dialog', {
+                    title: 'Ajouter aux favoris',
+                    message: 'Nom du favori :',
+                    defaultValue: currentTab.title
+                }).then(result => {
+                    if (result && result.trim()) {
+                        ipcRenderer.invoke('add-shortcut', {
+                            name: result.trim(),
+                            url: currentTab.url
+                        }).then(() => {
+                            ipcRenderer.invoke('get-shortcuts').then(shortcuts => {
+                                favorites = shortcuts;
+                                renderFavorites();
+                            });
+                        });
+                    }
+                });
+            }
+        });
+
+        // Initialiser le premier onglet
+        createNewTab();
+        document.getElementById('url').value = 'https://socialventura.com/user/profil';
     </script>
 </body>
 </html> 
