@@ -64,6 +64,50 @@
             border-radius: 12px;
             padding: 8px 16px;
             gap: 12px;
+            position: relative;
+        }
+
+        .security-icon {
+            width: 24px;
+            height: 24px;
+            opacity: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 8px 0 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.10);
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+        }
+
+        .security-icon.secure {
+            color: #219a48 !important;
+            background: #e8f5e9 !important;
+            border: 1.5px solid #219a4822;
+        }
+
+        .security-icon.insecure {
+            color: #FFC107 !important;
+            background: #fff8e1 !important;
+            border: 1.5px solid #FFC10722;
+        }
+
+        .security-icon.warning {
+            color: #FF5252 !important;
+            background: #ffebee !important;
+            border: 1.5px solid #FF525222;
+        }
+
+        .security-icon svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        .security-icon:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            background: rgba(255,255,255,0.18);
         }
 
         .address-bar input {
@@ -79,6 +123,88 @@
             color: rgba(255,255,255,0.6);
         }
 
+        .menu-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: background 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .menu-btn svg {
+            width: 20px;
+            height: 20px;
+            color: #fff;
+        }
+
+        .settings-menu {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: #23205a;
+            color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            min-width: 280px;
+            z-index: 2000;
+            padding: 18px 20px 14px 20px;
+        }
+
+        .settings-menu.active {
+            display: block;
+        }
+
+        .settings-menu h4 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .settings-menu label {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .settings-menu input[type="text"] {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .settings-menu .save-btn {
+            background: linear-gradient(90deg, #fe2c55 0%, #ff5a7a 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: background 0.2s;
+        }
+
+        .settings-menu .save-btn:hover {
+            background: linear-gradient(90deg, #ff5a7a 0%, #fe2c55 100%);
+        }
+
         /* Onglets */
         .tabs {
             display: flex;
@@ -88,6 +214,15 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
             overflow-x: auto;
             scrollbar-width: none;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: grab;
+        }
+
+        .tabs:active {
+            cursor: grabbing;
         }
 
         .tabs::-webkit-scrollbar {
@@ -106,6 +241,15 @@
             max-width: 200px;
             transition: all 0.2s;
             position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            z-index: 1;
+        }
+
+        .tab[draggable="true"] {
+            opacity: 0.7;
         }
 
         .tab.active {
@@ -133,6 +277,12 @@
             justify-content: center;
             opacity: 0.6;
             transition: all 0.2s;
+            font-size: 15px;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            z-index: 2;
+            position: static;
+            margin-left: 4px;
         }
 
         .tab-close:hover {
@@ -159,7 +309,7 @@
         /* Zone de contenu */
         .content {
             flex: 1 1 auto;
-            height: 100%;
+            height: calc(100% - 56px); /* Ajusté pour laisser la place à la barre de favoris */
             width: 100%;
             position: relative;
             overflow: hidden;
@@ -204,10 +354,8 @@
 
         /* Favoris */
         .favorites {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            position: relative;
+            width: 100%;
             background: rgba(24,20,74,0.95);
             padding: 12px 16px;
             display: flex;
@@ -232,11 +380,16 @@
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .favorite:hover {
             background: rgba(255,255,255,0.2);
-            }
+        }
 
         .favorite-icon {
             width: 16px;
@@ -246,7 +399,29 @@
 
         .favorite-title {
             font-size: 13px;
-            }
+        }
+
+        .favorite-close {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            transition: all 0.2s;
+            font-size: 15px;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            z-index: 2;
+            margin-left: 4px;
+            cursor: pointer;
+        }
+
+        .favorite-close:hover {
+            background: rgba(255,255,255,0.2);
+            opacity: 1;
+        }
 
         @keyframes loading {
             0% { transform: scaleX(0); }
@@ -295,8 +470,26 @@
             <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
+            <span class="security-icon" id="security-icon">
+                <svg id="security-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </span>
             <input type="text" id="url" placeholder="Rechercher ou entrer une adresse web">
-    </div>
+            <button class="menu-btn" id="menu-btn" title="Paramètres">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="6" r="1.5"/>
+                    <circle cx="12" cy="12" r="1.5"/>
+                    <circle cx="12" cy="18" r="1.5"/>
+                </svg>
+            </button>
+            <div class="settings-menu" id="settings-menu">
+                <h4>Paramètres du navigateur</h4>
+                <form id="settings-form">
+                    <label for="default-page">Page par défaut des nouveaux onglets :</label>
+                    <input type="text" id="default-page" name="default-page" value="https://socialventura.com/user/profil" autocomplete="off" />
+                    <button type="submit" class="save-btn">Enregistrer</button>
+                </form>
+            </div>
+        </div>
 
         <button class="nav-button" id="add-favorite">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -347,39 +540,57 @@
             });
         }
 
-        // Gestion des onglets
+        // --- SESSION PERSISTANTE DES ONGLETS ---
+        async function saveSessionTabs() {
+            const sessionTabs = tabs.map(t => ({ url: t.url, title: t.title }));
+            await ipcRenderer.invoke('save-session-tabs', sessionTabs);
+        }
+        async function loadSessionTabs() {
+            return await ipcRenderer.invoke('load-session-tabs');
+        }
+        function persistTabs() {
+            saveSessionTabs();
+        }
+
+        // --- PARAMETRES PERSISTANTS ---
+        async function saveSettings(settings) {
+            await ipcRenderer.invoke('save-browser-settings', settings);
+        }
+        async function loadSettings() {
+            return await ipcRenderer.invoke('load-browser-settings');
+        }
+        let defaultNewTabUrl = 'https://socialventura.com/user/profil';
+
+        // Gestion des onglets (corrigée)
         function createNewTab(url = 'https://socialventura.com/user/profil') {
             const tabId = ++currentTabId;
             tabs.push({ id: tabId, url, title: 'Nouvel onglet' });
-            
             const tab = document.createElement('div');
             tab.className = 'tab';
             tab.dataset.tabId = tabId;
+            tab.setAttribute('draggable', 'true');
             tab.innerHTML = `
                 <span class="tab-title">Nouvel onglet</span>
                 <span class="tab-close">×</span>
             `;
-
             const webview = document.createElement('webview');
             webview.id = `frame-${tabId}`;
             webview.className = 'browser-frame';
             webview.src = url;
             webview.setAttribute('webpreferences', 'contextIsolation=yes');
             webview.setAttribute('allowpopups', 'true');
-            // Force le style pour garantir la taille
             webview.style.height = '100%';
             webview.style.width = '100%';
             webview.style.flex = '1 1 auto';
             webview.style.position = 'absolute';
             webview.style.top = '0';
             webview.style.left = '0';
-
             document.querySelector('.tabs').insertBefore(tab, document.querySelector('.new-tab'));
             document.querySelector('.content').appendChild(webview);
-
             setupWebviewListeners(webview, tabId);
             forceIframeHeight(webview);
             switchToTab(tabId);
+            persistTabs();
         }
 
         function switchToTab(tabId) {
@@ -397,7 +608,10 @@
             const currentTab = tabs.find(t => t.id == tabId);
             if (currentTab) {
                 document.getElementById('url').value = currentTab.url;
+                checkSecurityStatus(currentTab.url);
             }
+            currentTabId = Number(tabId);
+            persistTabs();
         }
 
         function closeTab(tabId) {
@@ -413,6 +627,8 @@
             } else {
                 switchToTab(tabs[Math.min(tabIndex, tabs.length - 1)].id);
             }
+            persistTabs();
+            updateTabsBar();
         }
 
         // Gestion des webviews
@@ -430,8 +646,10 @@
                     document.querySelector(`[data-tab-id="${tabId}"] .tab-title`).textContent = tab.title;
                     if (webview.classList.contains('active')) {
                         document.getElementById('url').value = tab.url;
+                        checkSecurityStatus(tab.url);
                     }
                 }
+                persistTabs();
             });
 
             webview.addEventListener('did-navigate', (e) => {
@@ -439,7 +657,9 @@
                     document.getElementById('url').value = e.url;
                     const tab = tabs.find(t => t.id == tabId);
                     if (tab) tab.url = e.url;
+                    checkSecurityStatus(e.url);
                 }
+                persistTabs();
             });
 
             webview.addEventListener('did-navigate-in-page', (e) => {
@@ -447,14 +667,15 @@
                     document.getElementById('url').value = e.url;
                     const tab = tabs.find(t => t.id == tabId);
                     if (tab) tab.url = e.url;
+                    checkSecurityStatus(e.url);
                 }
+                persistTabs();
             });
 
-            webview.addEventListener('did-fail-load', (e) => {
-                console.error('Erreur de chargement:', e);
-                if (webview.classList.contains('active')) {
-                    document.getElementById('url').value = e.url;
-                }
+            webview.addEventListener('certificate-error', (event, url, error, certificate, callback) => {
+                event.preventDefault();
+                updateSecurityIcon('warning', 'Certificat non valide');
+                callback(false);
             });
 
             // Gérer les nouveaux onglets
@@ -463,24 +684,136 @@
             });
         }
 
+        function checkSecurityStatus(url) {
+            console.log('Checking security for URL:', url);
+            const securityIcon = document.getElementById('security-icon');
+            
+            if (!url) {
+                updateSecurityIcon('', '');
+                return;
+            }
+
+            if (url.startsWith('https://')) {
+                updateSecurityIcon('secure', 'Connexion sécurisée');
+            } else if (url.startsWith('http://')) {
+                updateSecurityIcon('insecure', 'Connexion non sécurisée');
+            } else {
+                updateSecurityIcon('', '');
+            }
+        }
+
+        function updateSecurityIcon(status, title) {
+            const securityIcon = document.getElementById('security-icon');
+            const svg = document.getElementById('security-svg');
+            securityIcon.className = 'security-icon ' + status;
+            securityIcon.title = title;
+            if (status === 'secure') {
+                securityIcon.style.color = '#219a48';
+                svg.innerHTML = `
+                    <path d="M17 11V7a5 5 0 00-10 0v4" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <rect x="7" y="11" width="10" height="7" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
+                `;
+            } else if (status === 'insecure' || status === 'warning') {
+                securityIcon.style.color = status === 'insecure' ? '#FFC107' : '#FF5252';
+                svg.innerHTML = `
+                    <path d="M12 17a2 2 0 002-2v-2a2 2 0 00-4 0v2a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M17 11V9a5 5 0 00-10 0v2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <rect x="7" y="11" width="10" height="7" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <line x1="9.5" y1="15" x2="14.5" y2="15" stroke="currentColor" stroke-width="2"/>
+                `;
+            } else {
+                securityIcon.style.color = '';
+                svg.innerHTML = '';
+            }
+            console.log('Security status updated:', status, title);
+        }
+
         // Gestion des favoris
         function renderFavorites() {
             const container = document.querySelector('.favorites');
-            container.innerHTML = favorites.map(fav => `
-                <div class="favorite" data-url="${fav.url}">
+            container.innerHTML = favorites.map((fav, i) => `
+                <div class="favorite" data-url="${fav.url}" data-index="${i}" draggable="true">
                     <svg class="favorite-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
                     </svg>
                     <span class="favorite-title">${fav.name}</span>
+                    <span class="favorite-close" title="Supprimer">×</span>
                 </div>
             `).join('');
 
             // Ajouter les événements
             container.querySelectorAll('.favorite').forEach(fav => {
-                fav.addEventListener('click', () => {
-                    createNewTab(fav.dataset.url);
+                fav.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('favorite-close')) return;
+                    const url = fav.getAttribute('data-url');
+                    if (url) createNewTab(url);
                 });
             });
+            container.querySelectorAll('.favorite-close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const favElem = closeBtn.closest('.favorite');
+                    const index = favElem.getAttribute('data-index');
+                    if (index !== null) {
+                        ipcRenderer.invoke('delete-shortcut', Number(index)).then(() => {
+                            ipcRenderer.invoke('get-shortcuts').then(shortcuts => {
+                                favorites = shortcuts;
+                                renderFavorites();
+                            });
+                        });
+                    }
+                });
+            });
+            // Drag & drop favoris
+            let dragSrcFav = null;
+            container.querySelectorAll('.favorite').forEach(fav => {
+                fav.addEventListener('dragstart', (e) => {
+                    dragSrcFav = fav;
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', fav.getAttribute('data-index'));
+                });
+                fav.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (fav !== dragSrcFav) fav.style.borderLeft = '2px solid #fe2c55';
+                });
+                fav.addEventListener('dragleave', (e) => {
+                    fav.style.borderLeft = '';
+                });
+                fav.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    fav.style.borderLeft = '';
+                    if (dragSrcFav && fav !== dragSrcFav) {
+                        const srcIndex = Number(dragSrcFav.getAttribute('data-index'));
+                        const targetIndex = Number(fav.getAttribute('data-index'));
+                        if (srcIndex > -1 && targetIndex > -1) {
+                            const moved = favorites.splice(srcIndex, 1)[0];
+                            favorites.splice(targetIndex, 0, moved);
+                            ipcRenderer.invoke('save-shortcuts', favorites).then(() => {
+                                renderFavorites();
+                            });
+                        }
+                    }
+                    dragSrcFav = null;
+                });
+                fav.addEventListener('dragend', (e) => {
+                    container.querySelectorAll('.favorite').forEach(f => f.style.borderLeft = '');
+                    dragSrcFav = null;
+                });
+            });
+        }
+
+        // Réattacher l'événement sur le bouton + à chaque fois
+        function attachNewTabButton() {
+            const newTabBtn = document.querySelector('.new-tab');
+            if (newTabBtn) {
+                newTabBtn.onclick = () => createNewTab();
+            }
+        }
+
+        // Appeler cette fonction après chaque modification du DOM des onglets
+        function updateTabsBar() {
+            attachNewTabButton();
         }
 
         // Événements
@@ -509,6 +842,7 @@
                     const webview = document.getElementById(`frame-${currentTabId}`);
                     webview.src = url;
                     currentTab.url = url;
+                    checkSecurityStatus(url);
                 }
             }
         });
@@ -557,9 +891,103 @@
             }
         });
 
-        // Initialiser le premier onglet
-        createNewTab();
-        document.getElementById('url').value = 'https://socialventura.com/user/profil';
+        // --- MENU SETTINGS ---
+        const menuBtn = document.getElementById('menu-btn');
+        const settingsMenu = document.getElementById('settings-menu');
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsMenu.classList.toggle('active');
+            document.getElementById('default-page').value = defaultNewTabUrl;
+        });
+        document.addEventListener('click', (e) => {
+            if (!settingsMenu.contains(e.target) && e.target !== menuBtn) {
+                settingsMenu.classList.remove('active');
+            }
+        });
+        document.getElementById('settings-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newUrl = document.getElementById('default-page').value.trim();
+            if (newUrl) {
+                defaultNewTabUrl = newUrl;
+                await saveSettings({ defaultNewTabUrl });
+                settingsMenu.classList.remove('active');
+            }
+        });
+        // Charger les paramètres au démarrage
+        window.addEventListener('DOMContentLoaded', async () => {
+            const settings = await loadSettings();
+            if (settings && settings.defaultNewTabUrl) {
+                defaultNewTabUrl = settings.defaultNewTabUrl;
+            }
+            document.getElementById('default-page').value = defaultNewTabUrl;
+        });
+
+        // --- AU DEMARRAGE : PROPOSER DE RESTAURER LA SESSION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            const previousTabs = await loadSessionTabs();
+            if (previousTabs && previousTabs.length > 0) {
+                if (confirm('Voulez-vous restaurer les onglets de la dernière session ?')) {
+                    tabs = [];
+                    document.querySelector('.tabs').innerHTML = '<div class="new-tab">+</div>';
+                    document.querySelector('.content').innerHTML = '';
+                    previousTabs.forEach(tab => createNewTab(tab.url));
+                    updateTabsBar();
+                    return;
+                }
+            }
+            // Sinon, comportement normal
+            createNewTab();
+            document.getElementById('url').value = 'https://socialventura.com/user/profil';
+            updateTabsBar();
+        });
+
+        // Drag & drop pour réordonner les onglets
+        let dragSrcTab = null;
+        document.querySelector('.tabs').addEventListener('dragstart', function(e) {
+            const tab = e.target.closest('.tab');
+            if (tab) {
+                dragSrcTab = tab;
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', tab.dataset.tabId);
+            }
+        });
+        document.querySelector('.tabs').addEventListener('dragover', function(e) {
+            e.preventDefault();
+            const tab = e.target.closest('.tab');
+            if (tab && tab !== dragSrcTab) {
+                tab.style.borderLeft = '2px solid #fe2c55';
+            }
+        });
+        document.querySelector('.tabs').addEventListener('dragleave', function(e) {
+            const tab = e.target.closest('.tab');
+            if (tab) {
+                tab.style.borderLeft = '';
+            }
+        });
+        document.querySelector('.tabs').addEventListener('drop', function(e) {
+            e.preventDefault();
+            const targetTab = e.target.closest('.tab');
+            if (dragSrcTab && targetTab && dragSrcTab !== targetTab) {
+                targetTab.style.borderLeft = '';
+                const tabsBar = document.querySelector('.tabs');
+                tabsBar.insertBefore(dragSrcTab, targetTab);
+                // Réordonner le tableau tabs
+                const srcId = Number(dragSrcTab.dataset.tabId);
+                const targetId = Number(targetTab.dataset.tabId);
+                const srcIndex = tabs.findIndex(t => t.id === srcId);
+                const targetIndex = tabs.findIndex(t => t.id === targetId);
+                if (srcIndex > -1 && targetIndex > -1) {
+                    const [removed] = tabs.splice(srcIndex, 1);
+                    tabs.splice(targetIndex, 0, removed);
+                    persistTabs();
+                }
+            }
+            dragSrcTab = null;
+        });
+        document.querySelector('.tabs').addEventListener('dragend', function(e) {
+            document.querySelectorAll('.tab').forEach(tab => tab.style.borderLeft = '');
+            dragSrcTab = null;
+        });
     </script>
 </body>
 </html> 

@@ -230,3 +230,25 @@ async function showCustomInputDialog(options) {
     });
   });
 }
+
+// Sauvegarde et chargement de la session d'onglets
+ipcMain.handle('save-session-tabs', (event, tabs) => {
+  store.set('sessionTabs', tabs);
+});
+
+ipcMain.handle('load-session-tabs', () => {
+  return store.get('sessionTabs', []);
+});
+
+// Paramètres du navigateur (URL par défaut)
+ipcMain.handle('save-browser-settings', (event, settings) => {
+  store.set('browserSettings', settings);
+});
+
+ipcMain.handle('load-browser-settings', () => {
+  return store.get('browserSettings', { defaultNewTabUrl: 'https://socialventura.com/user/profil' });
+});
+
+ipcMain.handle('save-shortcuts', (event, shortcuts) => {
+  store.set('shortcuts', shortcuts);
+});
