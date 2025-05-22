@@ -562,7 +562,7 @@
         let defaultNewTabUrl = 'https://socialventura.com/user/profil';
 
         // Gestion des onglets (corrigée)
-        function createNewTab(url = 'https://socialventura.com/user/profil') {
+        function createNewTab(url = defaultNewTabUrl) {
             const tabId = ++currentTabId;
             tabs.push({ id: tabId, url, title: 'New tab' });
             const tab = document.createElement('div');
