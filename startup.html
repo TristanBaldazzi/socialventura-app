@@ -473,8 +473,8 @@
             <span class="security-icon" id="security-icon">
                 <svg id="security-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
             </span>
-            <input type="text" id="url" placeholder="Rechercher ou entrer une adresse web">
-            <button class="menu-btn" id="menu-btn" title="Paramètres">
+            <input type="text" id="url" placeholder="Search or enter a web address">
+            <button class="menu-btn" id="menu-btn" title="Settings">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="6" r="1.5"/>
                     <circle cx="12" cy="12" r="1.5"/>
@@ -482,11 +482,11 @@
                 </svg>
             </button>
             <div class="settings-menu" id="settings-menu">
-                <h4>Paramètres du navigateur</h4>
+                <h4>Browser Settings</h4>
                 <form id="settings-form">
-                    <label for="default-page">Page par défaut des nouveaux onglets :</label>
+                    <label for="default-page">Default new tab page:</label>
                     <input type="text" id="default-page" name="default-page" value="https://socialventura.com/user/profil" autocomplete="off" />
-                    <button type="submit" class="save-btn">Enregistrer</button>
+                    <button type="submit" class="save-btn">Save</button>
                 </form>
             </div>
         </div>
@@ -499,7 +499,7 @@
     </div>
 
     <div class="tabs">
-        <div class="new-tab">+</div>
+        <div class="new-tab" title="New tab">+</div>
     </div>
 
     <div class="content">
@@ -564,13 +564,13 @@
         // Gestion des onglets (corrigée)
         function createNewTab(url = 'https://socialventura.com/user/profil') {
             const tabId = ++currentTabId;
-            tabs.push({ id: tabId, url, title: 'Nouvel onglet' });
+            tabs.push({ id: tabId, url, title: 'New tab' });
             const tab = document.createElement('div');
             tab.className = 'tab';
             tab.dataset.tabId = tabId;
             tab.setAttribute('draggable', 'true');
             tab.innerHTML = `
-                <span class="tab-title">Nouvel onglet</span>
+                <span class="tab-title">New tab</span>
                 <span class="tab-close">×</span>
             `;
             const webview = document.createElement('webview');
@@ -642,7 +642,7 @@
                 const tab = tabs.find(t => t.id == tabId);
                 if (tab) {
                     tab.url = webview.src;
-                    tab.title = webview.getTitle() || 'Nouvel onglet';
+                    tab.title = webview.getTitle() || 'New tab';
                     document.querySelector(`[data-tab-id="${tabId}"] .tab-title`).textContent = tab.title;
                     if (webview.classList.contains('active')) {
                         document.getElementById('url').value = tab.url;
@@ -714,6 +714,7 @@
                     <rect x="7" y="11" width="10" height="7" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
                     <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
                 `;
+                securityIcon.title = 'Secure connection';
             } else if (status === 'insecure' || status === 'warning') {
                 securityIcon.style.color = status === 'insecure' ? '#FFC107' : '#FF5252';
                 svg.innerHTML = `
@@ -722,9 +723,11 @@
                     <rect x="7" y="11" width="10" height="7" rx="2" stroke="currentColor" stroke-width="2" fill="none"/>
                     <line x1="9.5" y1="15" x2="14.5" y2="15" stroke="currentColor" stroke-width="2"/>
                 `;
+                securityIcon.title = status === 'insecure' ? 'Not secure connection' : 'Certificate not valid';
             } else {
                 securityIcon.style.color = '';
                 svg.innerHTML = '';
+                securityIcon.title = '';
             }
             console.log('Security status updated:', status, title);
         }
@@ -738,7 +741,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
                     </svg>
                     <span class="favorite-title">${fav.name}</span>
-                    <span class="favorite-close" title="Supprimer">×</span>
+                    <span class="favorite-close" title="Remove">×</span>
                 </div>
             `).join('');
 
@@ -872,8 +875,8 @@
             const currentTab = tabs.find(t => t.id == currentTabId);
             if (currentTab && currentTab.url !== 'about:blank') {
                 ipcRenderer.invoke('show-input-dialog', {
-                    title: 'Ajouter aux favoris',
-                    message: 'Nom du favori :',
+                    title: 'Add to favorites',
+                    message: 'Favorite name:',
                     defaultValue: currentTab.title
                 }).then(result => {
                     if (result && result.trim()) {
@@ -926,18 +929,18 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const previousTabs = await loadSessionTabs();
             if (previousTabs && previousTabs.length > 0) {
-                if (confirm('Voulez-vous restaurer les onglets de la dernière session ?')) {
+                if (confirm('Do you want to restore the tabs from your last session?')) {
                     tabs = [];
-                    document.querySelector('.tabs').innerHTML = '<div class="new-tab">+</div>';
+                    document.querySelector('.tabs').innerHTML = '<div class="new-tab" title="New tab">+</div>';
                     document.querySelector('.content').innerHTML = '';
                     previousTabs.forEach(tab => createNewTab(tab.url));
                     updateTabsBar();
                     return;
                 }
             }
-            // Sinon, comportement normal
+            // Otherwise, normal behavior
             createNewTab();
-            document.getElementById('url').value = 'https://socialventura.com/user/profil';
+            document.getElementById('url').value = defaultNewTabUrl;
             updateTabsBar();
         });
 

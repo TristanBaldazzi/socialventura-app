@@ -51,7 +51,7 @@ ipcMain.handle('get-shortcuts', () => {
 
 ipcMain.handle('add-shortcut', (event, shortcut) => {
   const shortcuts = store.get('shortcuts', []);
-  // Empêche les doublons d'URL
+  // Prevent duplicate URLs
   if (!shortcuts.some(s => s.url === shortcut.url)) {
     shortcuts.push(shortcut);
     store.set('shortcuts', shortcuts);
@@ -59,7 +59,7 @@ ipcMain.handle('add-shortcut', (event, shortcut) => {
   return shortcuts;
 });
 
-// Modifier un raccourci
+// Edit a shortcut
 ipcMain.handle('update-shortcut', (event, { index, newName }) => {
   const shortcuts = store.get('shortcuts', []);
   if (shortcuts[index]) {
@@ -69,7 +69,7 @@ ipcMain.handle('update-shortcut', (event, { index, newName }) => {
   return shortcuts;
 });
 
-// Supprimer un raccourci
+// Delete a shortcut
 ipcMain.handle('delete-shortcut', (event, index) => {
   const shortcuts = store.get('shortcuts', []);
   shortcuts.splice(index, 1);
@@ -77,22 +77,22 @@ ipcMain.handle('delete-shortcut', (event, index) => {
   return shortcuts;
 });
 
-// Dialog pour saisir le nom du raccourci
+// Dialog to enter shortcut name
 ipcMain.handle('show-input-dialog', async (event, options) => {
   try {
     const result = await dialog.showInputBox(mainWindow, {
       title: options.title || 'Input',
-      label: options.message || 'Entrez une valeur:',
+      label: options.message || 'Enter a value:',
       value: options.defaultValue || ''
     });
     return result.response;
   } catch (error) {
-    // Fallback avec une fenêtre personnalisée
+    // Fallback with a custom window
     return await showCustomInputDialog(options);
   }
 });
 
-// Fonction pour créer une fenêtre de saisie personnalisée
+// Function to create a custom input window
 async function showCustomInputDialog(options) {
   return new Promise((resolve) => {
     const inputWindow = new BrowserWindow({
@@ -193,10 +193,10 @@ async function showCustomInputDialog(options) {
       <body>
         <div class="container">
           <h3>${options.title || 'Input'}</h3>
-          <input type="text" id="input" value="${options.defaultValue || ''}" placeholder="Entrez le nom du raccourci" autofocus />
+          <input type="text" id="input" value="${options.defaultValue || ''}" placeholder="Enter shortcut name" autofocus />
           <div class="buttons">
-            <button class="cancel" onclick="cancel()">Annuler</button>
-            <button class="ok" onclick="ok()">Ajouter</button>
+            <button class="cancel" onclick="cancel()">Cancel</button>
+            <button class="ok" onclick="ok()">Add</button>
           </div>
         </div>
         <script>
